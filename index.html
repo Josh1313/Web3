@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AUDIT WEB3 Framework is an automated smart-contract security engine for faster exploit validation, stronger proof, and higher-confidence audit throughput.">
+  <meta name="description" content="AUDIT WEB3 helps security teams find real smart contract vulnerabilities faster with validated exploit proof, lower noise, and stronger audit confidence.">
   <title>AUDIT WEB3 Framework</title>
   <style>
     :root {
@@ -825,6 +825,31 @@
       background: rgba(255, 255, 255, 0.03);
     }
 
+    input[type="date"],
+    input[type="time"] {
+      color-scheme: dark;
+      padding-right: 44px;
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 18px 18px;
+    }
+
+    input[type="date"] {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4f7fb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2.5'/%3E%3Cpath d='M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17'/%3E%3C/svg%3E");
+    }
+
+    input[type="time"] {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4f7fb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M12 7.5v5l3 1.8'/%3E%3C/svg%3E");
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+
     textarea {
       min-height: 120px;
       resize: vertical;
@@ -932,8 +957,11 @@
 
     @media (max-width: 780px) {
       .topbar {
+        position: static;
+        top: auto;
         border-radius: 28px;
         padding: 16px;
+        margin-bottom: 18px;
       }
 
       .topbar,
@@ -958,6 +986,10 @@
       .hero-copy,
       .footer-card {
         padding: 22px;
+      }
+
+      .hero {
+        padding-top: 0;
       }
 
       .mini-grid,
@@ -987,38 +1019,38 @@
     </div>
     <nav class="tablist" aria-label="Primary tabs" role="tablist">
       <button class="tab-button" id="tab-home" type="button" role="tab" aria-controls="panel-home" aria-selected="true" data-panel="home">Home</button>
-      <button class="tab-button" id="tab-workflow" type="button" role="tab" aria-controls="panel-workflow" aria-selected="false" data-panel="workflow">Workflow</button>
-      <button class="tab-button" id="tab-audit" type="button" role="tab" aria-controls="panel-audit" aria-selected="false" data-panel="audit">Audit</button>
+      <button class="tab-button" id="tab-workflow" type="button" role="tab" aria-controls="panel-workflow" aria-selected="false" data-panel="workflow">How It Works</button>
+      <button class="tab-button" id="tab-audit" type="button" role="tab" aria-controls="panel-audit" aria-selected="false" data-panel="audit">Proof</button>
     </nav>
   </header>
 
   <main class="shell">
     <section class="hero">
       <article class="panel hero-copy">
-        <div class="hero-badge">From signal to validated exploit, without analyst drag</div>
-        <h2>Security infrastructure built for real exploit proof.</h2>
+        <div class="hero-badge">From first signal to validated exploit proof</div>
+        <h2>Find real smart contract vulnerabilities before attackers do.</h2>
         <p>
-          AUDIT WEB3 Framework is an automated smart-contract security engine that combines static analysis,
-          formal checks, business-logic reasoning, exploit generation, and fork-based validation into one workflow.
-          The result is faster audit throughput, stronger proof, and fewer dead-end findings.
+          AUDIT WEB3 helps security teams move from raw findings to validated exploit evidence faster.
+          It combines automated analysis, exploit generation, and fork-based validation to reduce noise
+          and increase confidence in every result.
         </p>
         <div class="cta-row">
           <a class="button-link primary" href="#contact">Book a Call</a>
-          <button class="button-link secondary" type="button" data-switch-panel="workflow">See Workflow</button>
-          <button class="button-link secondary" type="button" data-switch-panel="audit">See Audit Artifacts</button>
+          <button class="button-link secondary" type="button" data-switch-panel="workflow">See How It Works</button>
+          <button class="button-link secondary" type="button" data-switch-panel="audit">See Proof</button>
         </div>
         <div class="mini-grid" aria-label="Key platform metrics">
           <div class="mini-stat">
             <strong>26 stages</strong>
-            <span>Structured audit pipeline from intake to exploit validation.</span>
+            <span>A structured pipeline from scope intake to validated exploit evidence.</span>
           </div>
           <div class="mini-stat">
             <strong>31 chains</strong>
-            <span>EVM deployment support for broad protocol coverage.</span>
+            <span>Broad EVM coverage across live smart contract environments.</span>
           </div>
           <div class="mini-stat">
             <strong>86% reduction</strong>
-            <span>Measured false-positive filtering across the framework flow.</span>
+            <span>Measured false-positive reduction across the analysis pipeline.</span>
           </div>
         </div>
       </article>
@@ -1128,15 +1160,15 @@
           <div class="diagram-notes" aria-label="Pipeline highlights">
             <div class="diagram-note">
               <strong>Signal Compression</strong>
-              <span>Moves from raw scope to high-confidence exploitable signal through staged filtering.</span>
+              <span>Turns broad scope into high-confidence exploitable signal through staged filtering.</span>
             </div>
             <div class="diagram-note">
               <strong>Modular Architecture</strong>
-              <span>Each layer can evolve independently without destabilizing the full pipeline.</span>
+              <span>Each layer can evolve independently without slowing down the rest of the platform.</span>
             </div>
             <div class="diagram-note">
-              <strong>Buyer Proof</strong>
-              <span>Ends in validated evidence that audit firms and security teams can actually act on.</span>
+              <strong>Actionable Proof</strong>
+              <span>Ends in validated evidence that security teams can review, trust, and act on.</span>
             </div>
           </div>
         </div>
@@ -1148,16 +1180,16 @@
         <div class="section-header">
           <h3>Why teams bring this in</h3>
           <p>
-            This is not another static analyzer, another audit dashboard, or another thin wrapper around a language model.
-            It is internal security infrastructure for teams that need to find exploitable issues faster and defend every conclusion with stronger evidence.
+            Built for audit firms, bounty operators, and security teams that need faster confirmation,
+            stronger proof, and fewer wasted hours chasing false positives.
           </p>
         </div>
         <div class="content-grid">
           <article class="card">
-            <h3>What You Are Buying</h3>
+            <h3>What You Get</h3>
             <p>
-              A pre-audit and exploit-validation engine that accepts a deployed contract or repository,
-              runs multiple analysis modes in parallel, filters noise, and produces a higher-confidence result set.
+              A smart contract security platform that turns raw scope into validated findings,
+              exploit-ready evidence, and faster decision-making.
             </p>
           </article>
           <article class="card">
@@ -1169,11 +1201,11 @@
             </ul>
           </article>
           <article class="card">
-            <h3>Commercial Angles</h3>
+            <h3>How Teams Use It</h3>
             <ul>
-              <li>Pre-audit acceleration layer for audit teams.</li>
-              <li>Exploit-validation backend for triage workflows.</li>
-              <li>White-labeled internal analyst tooling.</li>
+              <li>Accelerate pre-audit review without lowering proof quality.</li>
+              <li>Validate exploit paths faster during triage and bounty operations.</li>
+              <li>Deploy it as white-labeled internal tooling for security teams.</li>
             </ul>
           </article>
         </div>
@@ -1181,10 +1213,10 @@
 
       <section class="tab-panel" id="panel-workflow" role="tabpanel" aria-labelledby="tab-workflow" tabindex="0">
         <div class="section-header">
-          <h3>Workflow</h3>
+          <h3>How It Works</h3>
           <p>
-            The framework is organized into six distinct functional layers that carry an audit from scope ingestion to verified exploit output.
-            This is the part prospects need to understand: the value is not just automation, but structured progression from raw target to confirmed evidence.
+            A six-stage workflow takes each target from scope intake to validated exploit output,
+            giving your team a clear path from detection to proof.
           </p>
         </div>
         <div class="workflow-grid">
@@ -1193,77 +1225,77 @@
             <div class="workflow-layer-map">
               <div class="workflow-node" data-step="1">
                 <h4>Input Layer</h4>
-                <p>Acts as the gateway for scope definition, accepting deployed contract addresses, GitHub repository URLs, and bug bounty program definitions.</p>
+                <p>Accepts deployed contract addresses, GitHub repositories, and bug bounty scopes as the starting point for review.</p>
                 <small>Gateway to the pipeline</small>
               </div>
               <div class="workflow-node" data-step="2">
                 <h4>Collection Layer</h4>
-                <p>Creates the target profile with verified Solidity source, ABI definitions, dependency trees, and protocol fingerprints.</p>
+                <p>Builds a verified target profile with source code, ABI data, dependency maps, and protocol context.</p>
                 <small>Target intelligence</small>
               </div>
               <div class="workflow-node" data-step="3">
                 <h4>Analysis Layer</h4>
-                <p>Executes six static analysis tools in parallel alongside mathematical checks and formal verification engines.</p>
+                <p>Runs parallel analysis with static tools, mathematical checks, and formal verification support.</p>
                 <small>Parallel detection suite</small>
               </div>
               <div class="workflow-node" data-step="4">
                 <h4>Validation Layer</h4>
-                <p>Filters and enriches raw findings through semantic deduplication and the anti-hallucination stack to isolate high-confidence signals.</p>
+                <p>Filters weak findings, removes duplicates, and isolates the high-confidence signals worth investigating.</p>
                 <small>Detective system</small>
               </div>
               <div class="workflow-node" data-step="5">
                 <h4>Exploitation Layer</h4>
-                <p>Converts validated findings into executable proof-of-concept contracts using protocol-aware scaffold generation and multi-turn reasoning.</p>
+                <p>Transforms validated findings into executable proof-of-concept exploits with protocol-aware generation.</p>
                 <small>Attacker system</small>
               </div>
               <div class="workflow-node" data-step="6">
                 <h4>Output Layer</h4>
-                <p>Classifies findings, stores results, and grows the historical knowledge base that makes later reviews sharper.</p>
+                <p>Packages findings, stores outcomes, and strengthens the knowledge base for sharper future reviews.</p>
                 <small>Persistent output layer</small>
               </div>
             </div>
           </article>
 
           <article class="card">
-            <h3>What This Structure Sells</h3>
+            <h3>Why It Matters</h3>
             <p>
-              Prospects do not just buy a faster tool. They buy a system that explains how evidence is created, validated, exploited, and retained over time.
+              This is more than automation. It is a repeatable system for producing evidence your team can trust and act on.
             </p>
             <div class="metrics-grid">
               <div class="metric-box">
                 <strong>Modular upgrades</strong>
-                <span>Each layer can evolve, be extended, or be replaced without breaking the rest of the pipeline.</span>
+                <span>Each layer can evolve, be extended, or be replaced without breaking the rest of the platform.</span>
               </div>
               <div class="metric-box">
                 <strong>Operational clarity</strong>
-                <span>Buyers can see exactly where scope intake, analysis, validation, and exploitation happen.</span>
+                <span>Your team can see exactly where intake, analysis, validation, and exploit generation happen.</span>
               </div>
               <div class="metric-box">
                 <strong>Proof-first delivery</strong>
-                <span>The pipeline is explicitly built to end in validated evidence, not just suspicion or noisy findings.</span>
+                <span>The workflow is built to end in validated evidence, not vague suspicion or noisy findings.</span>
               </div>
               <div class="metric-box">
                 <strong>Compounding value</strong>
-                <span>Output persistence and knowledge-base updates make every engagement more useful than the last.</span>
+                <span>Stored outcomes and knowledge-base updates make every engagement more valuable than the last.</span>
               </div>
             </div>
 
             <div class="diff-grid">
               <div class="diff-card">
                 <strong>Audit firms</strong>
-                <span>Use it as a structured pre-audit and exploit-validation layer that increases throughput without weakening proof quality.</span>
+                <span>Increase audit throughput with a structured pre-audit and exploit-validation layer.</span>
               </div>
               <div class="diff-card">
                 <strong>Bounty teams</strong>
-                <span>Use it to compress triage cycles and move from raw report to exploit confirmation faster.</span>
+                <span>Compress triage cycles and move from raw report to exploit confirmation faster.</span>
               </div>
               <div class="diff-card">
                 <strong>Security platforms</strong>
-                <span>Use it to add pre-deployment exploit discovery alongside monitoring, response, or investigation products.</span>
+                <span>Add pre-deployment exploit discovery alongside monitoring, response, or investigation products.</span>
               </div>
               <div class="diff-card">
                 <strong>Strategic buyers</strong>
-                <span>Use it as owned internal infrastructure that can be extended layer by layer instead of rebuilding the stack from scratch.</span>
+                <span>Own a security platform you can extend layer by layer instead of rebuilding the stack from scratch.</span>
               </div>
             </div>
           </article>
@@ -1272,10 +1304,10 @@
 
       <section class="tab-panel" id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" tabindex="0">
         <div class="section-header">
-          <h3>Audit Artifacts</h3>
+          <h3>Proof in Practice</h3>
           <p>
-            This tab embeds the existing audit deliverables from the repository so a prospective buyer or partner can see
-            how findings, validation, and exploit evidence are surfaced in practice. Each artifact opens inline and can also be viewed directly.
+            Review real audit artifacts that show how the platform surfaces findings,
+            validates exploit paths, and presents evidence clearly.
           </p>
         </div>
 
@@ -1283,15 +1315,15 @@
           <aside class="audit-menu" aria-label="Audit selector">
             <button class="audit-button is-active" type="button" data-audit="efvault">
               <strong>EFVault Confirmed Exploit</strong>
-              <span>Confirmed exploit path with autonomous audit narrative and validation evidence.</span>
+              <span>Confirmed exploit path with validated evidence and a clear audit narrative.</span>
             </button>
             <button class="audit-button" type="button" data-audit="ceaser">
               <strong>Ceaser Protocol</strong>
-              <span>High signal-to-noise example showing false-positive rejection and one real vulnerability.</span>
+              <span>Clear signal-to-noise example showing false-positive rejection and one real vulnerability.</span>
             </button>
             <button class="audit-button" type="button" data-audit="kiln">
               <strong>Kiln AaveV3Connector</strong>
-              <span>Bug bounty-oriented case with connector analysis and issue classification.</span>
+              <span>Bug bounty case showing connector analysis, issue framing, and exploit validation.</span>
             </button>
           </aside>
 
@@ -1300,7 +1332,7 @@
               <div class="audit-summary">
                 <h3 id="audit-title">EFVault Confirmed Exploit</h3>
                 <p id="audit-summary">
-                  Confirmed exploit case showing autonomous analysis, formal checks, and exploit-path validation in one report.
+                  A confirmed exploit case showing analysis, formal checks, and exploit-path validation in one report.
                 </p>
               </div>
               <a class="open-link" id="audit-open-link" href="audit/audit-721-efvault-confirmed-exploit.html" target="_blank" rel="noopener noreferrer">Open Artifact in New Tab</a>
@@ -1317,7 +1349,7 @@
               </div>
               <div class="audit-meta">
                 <span>Commercial Relevance</span>
-                <strong id="audit-usecase">Proof of exploit depth</strong>
+                <strong id="audit-usecase">Exploit validation depth</strong>
               </div>
             </div>
 
@@ -1340,9 +1372,8 @@
           <div class="section-header">
             <h3>About Us</h3>
             <p>
-              We build autonomous smart-contract security infrastructure for teams that care about speed,
-              proof quality, and exploit realism. The product is designed to sit behind professional security workflows,
-              not replace them with a thin interface.
+              We build smart contract security systems for teams that need speed, proof, and real exploit validation.
+              Our platform is designed to strengthen professional security workflows, not replace expert judgment.
             </p>
           </div>
 
@@ -1388,7 +1419,7 @@
 
             <label>
               Context
-              <textarea id="lead-notes" name="notes" placeholder="Tell us whether this is for audit acceleration, exploit validation, or a strategic partnership."></textarea>
+              <textarea id="lead-notes" name="notes" placeholder="Tell us about your team, audit volume, or what you want to improve."></textarea>
             </label>
 
             <button type="submit">Request a Demo Call</button>
@@ -1414,23 +1445,23 @@
     const auditArtifacts = {
       efvault: {
         title: "EFVault Confirmed Exploit",
-        summary: "Confirmed exploit case showing autonomous analysis, formal checks, and exploit-path validation in one report.",
+        summary: "A confirmed exploit case showing analysis, formal checks, and exploit-path validation in one report.",
         auditId: "#721",
         signal: "Confirmed exploit",
-        useCase: "Proof of exploit depth",
+        useCase: "Exploit validation depth",
         href: "audit/audit-721-efvault-confirmed-exploit.html"
       },
       ceaser: {
         title: "Ceaser Protocol",
-        summary: "Signal filtering example where the framework rejected multiple weak paths and isolated one commercially relevant vulnerability.",
+        summary: "A signal-filtering example where the platform rejected weak paths and isolated one commercially relevant vulnerability.",
         auditId: "#754",
         signal: "False-positive compression",
-        useCase: "Audit throughput and review efficiency",
+        useCase: "Review speed and efficiency",
         href: "audit/audit-754-ceaser-protocol.html"
       },
       kiln: {
         title: "Kiln AaveV3Connector",
-        summary: "Bounty-oriented connector review showing protocol context, issue framing, and cross-tool validation output.",
+        summary: "A bounty-focused connector review showing protocol context, issue framing, and validation output.",
         auditId: "#800",
         signal: "Bounty-grade finding flow",
         useCase: "Triage and exploit confirmation",
