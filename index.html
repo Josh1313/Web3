@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AUDIT WEB3 Framework is an automated smart-contract security engine for faster exploit validation, stronger proof, and higher-confidence audit throughput.">
+  <title>AUDIT WEB3 Framework</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-alt: #0e1f35;
+      --panel: rgba(11, 23, 39, 0.72);
+      --panel-strong: rgba(9, 17, 29, 0.9);
+      --line: rgba(158, 189, 255, 0.18);
+      --line-strong: rgba(158, 189, 255, 0.28);
+      --text: #f4f7fb;
+      --muted: #a6b4ca;
+      --soft: #d9e2f0;
+      --accent: #58e0b5;
+      --accent-2: #7ba6ff;
+      --accent-3: #ffd16a;
+      --danger: #ff8a8a;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max-width: 1220px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      font-family: "Aptos", "Segoe UI", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(88, 224, 181, 0.18), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(123, 166, 255, 0.2), transparent 26%),
+        linear-gradient(140deg, #050b15 0%, #091321 45%, #0a1627 100%);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      z-index: -1;
+      filter: blur(30px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    body::before {
+      top: 8%;
+      left: -8%;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(88, 224, 181, 0.18);
+    }
+
+    body::after {
+      right: -6%;
+      bottom: 12%;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: rgba(123, 166, 255, 0.16);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    img,
+    iframe {
+      max-width: 100%;
+    }
+
+    .shell {
+      width: min(var(--max-width), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      width: min(var(--max-width), calc(100% - 32px));
+      margin: 12px auto 0;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      background: rgba(7, 15, 27, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #091321;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      background:
+        linear-gradient(135deg, rgba(88, 224, 181, 1), rgba(123, 166, 255, 1));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tablist {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .tab-button {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 10px 16px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 180ms ease;
+    }
+
+    .tab-button:hover,
+    .tab-button:focus-visible {
+      color: var(--text);
+      border-color: var(--line);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .tab-button[aria-selected="true"] {
+      color: #08111d;
+      background: linear-gradient(135deg, var(--accent), #9fe7ff);
+      box-shadow: 0 10px 28px rgba(88, 224, 181, 0.22);
+    }
+
+    main {
+      padding-bottom: 40px;
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 28px;
+      padding: 54px 0 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      position: relative;
+      background: linear-gradient(180deg, rgba(14, 31, 53, 0.72), rgba(7, 15, 27, 0.88));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-copy {
+      padding: 42px;
+    }
+
+    .hero-copy::before,
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, rgba(255, 255, 255, 0.08), transparent 40%),
+        linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.02) 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(88, 224, 181, 0.22);
+      color: var(--soft);
+      background: rgba(88, 224, 181, 0.08);
+      font-size: 0.85rem;
+      margin-bottom: 22px;
+    }
+
+    .hero-copy h2 {
+      margin: 0 0 16px;
+      font-size: clamp(2.5rem, 6vw, 5.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 10ch;
+    }
+
+    .hero-copy p {
+      margin: 0 0 24px;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .button-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 18px;
+      border-radius: 999px;
+      border: 0;
+      text-decoration: none;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 180ms ease;
+    }
+
+    .button-link:hover,
+    .button-link:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .button-link.primary {
+      color: #07111f;
+      background: linear-gradient(135deg, var(--accent), #a5f0e2);
+    }
+
+    .button-link.secondary {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini-stat {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .mini-stat span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .hero-visual {
+      min-height: 640px;
+      display: grid;
+      align-items: stretch;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .signal-board {
+      position: relative;
+      display: grid;
+      gap: 16px;
+      width: 100%;
+      height: 100%;
+      align-content: start;
+    }
+
+    .diagram-frame {
+      position: relative;
+      border-radius: 26px;
+      border: 1px solid rgba(88, 224, 181, 0.16);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(88, 224, 181, 0.08), transparent 36%),
+        linear-gradient(160deg, rgba(11, 23, 39, 0.94), rgba(5, 11, 21, 0.98));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 24px 60px rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+    }
+
+    .diagram-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(123, 166, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(123, 166, 255, 0.04) 1px, transparent 1px);
+      background-size: 42px 42px;
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    .diagram-frame svg {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .diagram-notes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .diagram-note {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(123, 166, 255, 0.14);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .diagram-note strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      color: var(--soft);
+    }
+
+    .diagram-note span {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .tabs-shell {
+      display: grid;
+      gap: 22px;
+      margin-top: 12px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.is-active {
+      display: block;
+      animation: reveal 300ms ease;
+    }
+
+    .content-grid,
+    .workflow-grid,
+    .footer-grid {
+      display: grid;
+      gap: 22px;
+    }
+
+    .content-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    .card h3,
+    .section-header h3 {
+      margin: 0 0 12px;
+      font-size: 1.25rem;
+    }
+
+    .card p,
+    .card li,
+    .section-header p,
+    .audit-summary p,
+    .field-note,
+    .lead-note {
+      color: var(--muted);
+    }
+
+    .card ul,
+    .timeline {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .card li,
+    .timeline li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 12px;
+    }
+
+    .card li::before,
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.68em;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 6px rgba(88, 224, 181, 0.08);
+    }
+
+    .section-header {
+      padding: 22px 26px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+
+    .section-header p {
+      max-width: 72ch;
+      margin: 0;
+    }
+
+    .metrics-grid,
+    .diff-grid,
+    .contact-meta,
+    .audit-meta-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .metrics-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 20px;
+    }
+
+    .metric-box {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+    }
+
+    .metric-box strong {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    .process-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .process-step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .step-number {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-2), rgba(88, 224, 181, 0.85));
+      color: #08111d;
+      font-weight: 800;
+    }
+
+    .process-step h4,
+    .contact-column h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .process-step p,
+    .contact-column p,
+    .audit-summary li,
+    .deployment-callout li {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .diff-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 20px;
+    }
+
+    .diff-card {
+      padding: 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .diff-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--soft);
+    }
+
+    .workflow-grid {
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: start;
+    }
+
+    .workflow-map {
+      display: grid;
+      gap: 14px;
+    }
+
+    .workflow-layer-map {
+      position: relative;
+      display: grid;
+      gap: 16px;
+      padding-left: 22px;
+    }
+
+    .workflow-layer-map::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(88, 224, 181, 0.42), rgba(123, 166, 255, 0.14));
+    }
+
+    .workflow-node {
+      position: relative;
+      padding: 18px 18px 18px 72px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .workflow-node::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-2), rgba(88, 224, 181, 0.9));
+      color: #08111d;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .workflow-node h4 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+    }
+
+    .workflow-node p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .workflow-node small {
+      display: block;
+      margin-top: 8px;
+      color: var(--soft);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .audit-layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 22px;
+    }
+
+    .audit-menu {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .audit-button {
+      width: 100%;
+      text-align: left;
+      padding: 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      cursor: pointer;
+      transition: 180ms ease;
+    }
+
+    .audit-button:hover,
+    .audit-button:focus-visible {
+      border-color: var(--line-strong);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .audit-button.is-active {
+      background:
+        linear-gradient(180deg, rgba(88, 224, 181, 0.18), rgba(123, 166, 255, 0.08));
+      border-color: rgba(88, 224, 181, 0.4);
+      box-shadow: 0 16px 40px rgba(88, 224, 181, 0.12);
+    }
+
+    .audit-button strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .audit-button span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .audit-viewer {
+      min-height: 880px;
+      padding: 18px;
+      background: rgba(7, 15, 27, 0.78);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    .audit-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .audit-header h3 {
+      margin: 0 0 8px;
+    }
+
+    .audit-meta-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin: 18px 0 0;
+    }
+
+    .audit-meta {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .audit-meta span {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .audit-meta strong {
+      display: block;
+      color: var(--soft);
+      font-size: 0.96rem;
+    }
+
+    .audit-frame-wrap {
+      position: relative;
+      min-height: 700px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    #audit-frame {
+      width: 100%;
+      min-height: 700px;
+      border: 0;
+      background: #ffffff;
+    }
+
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .footer-card {
+      margin-top: 30px;
+      padding: 26px;
+      background: linear-gradient(180deg, rgba(8, 17, 29, 0.94), rgba(9, 17, 29, 0.84));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .footer-grid {
+      grid-template-columns: minmax(0, 0.92fr) minmax(340px, 1.08fr);
+      align-items: start;
+    }
+
+    .contact-meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .contact-column {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .contact-column a {
+      text-decoration: none;
+      color: var(--soft);
+    }
+
+    form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: var(--soft);
+    }
+
+    input,
+    textarea,
+    button[type="submit"] {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(158, 189, 255, 0.2);
+      font: inherit;
+    }
+
+    input,
+    textarea {
+      padding: 14px 15px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid rgba(88, 224, 181, 0.28);
+      outline-offset: 2px;
+      border-color: rgba(88, 224, 181, 0.45);
+    }
+
+    button[type="submit"] {
+      padding: 14px 18px;
+      cursor: pointer;
+      color: #07111f;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), #baf6e8);
+    }
+
+    .form-status {
+      min-height: 1.4em;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .form-status.is-error {
+      color: var(--danger);
+    }
+
+    .form-status.is-success {
+      color: var(--accent);
+    }
+
+    .site-foot {
+      display: flex;
+      justify-content: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 26px 0 42px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .tab-panel.is-active {
+        animation: none;
+      }
+
+      .tab-button,
+      .button-link,
+      .audit-button {
+        transition: none;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .hero,
+      .workflow-grid,
+      .footer-grid,
+      .audit-layout,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy h2 {
+        max-width: none;
+      }
+
+      .hero-visual {
+        min-height: 0;
+      }
+
+      .audit-menu {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 780px) {
+      .topbar {
+        border-radius: 28px;
+        padding: 16px;
+      }
+
+      .topbar,
+      .brand,
+      .tablist,
+      .audit-header,
+      .site-foot {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .tablist {
+        justify-content: stretch;
+      }
+
+      .tab-button,
+      .open-link,
+      .button-link {
+        width: 100%;
+      }
+
+      .hero-copy,
+      .footer-card {
+        padding: 22px;
+      }
+
+      .mini-grid,
+      .metrics-grid,
+      .diff-grid,
+      .field-grid,
+      .contact-meta,
+      .audit-meta-grid,
+      .audit-menu {
+        grid-template-columns: 1fr;
+      }
+
+      .diagram-notes {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">A3</div>
+      <div class="brand-copy">
+        <p class="eyebrow">Autonomous Security Infrastructure</p>
+        <h1>AUDIT WEB3 Framework</h1>
+      </div>
+    </div>
+    <nav class="tablist" aria-label="Primary tabs" role="tablist">
+      <button class="tab-button" id="tab-home" type="button" role="tab" aria-controls="panel-home" aria-selected="true" data-panel="home">Home</button>
+      <button class="tab-button" id="tab-workflow" type="button" role="tab" aria-controls="panel-workflow" aria-selected="false" data-panel="workflow">Workflow</button>
+      <button class="tab-button" id="tab-audit" type="button" role="tab" aria-controls="panel-audit" aria-selected="false" data-panel="audit">Audit</button>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <article class="panel hero-copy">
+        <div class="hero-badge">From signal to validated exploit, without analyst drag</div>
+        <h2>Security infrastructure built for real exploit proof.</h2>
+        <p>
+          AUDIT WEB3 Framework is an automated smart-contract security engine that combines static analysis,
+          formal checks, business-logic reasoning, exploit generation, and fork-based validation into one workflow.
+          The result is faster audit throughput, stronger proof, and fewer dead-end findings.
+        </p>
+        <div class="cta-row">
+          <a class="button-link primary" href="#contact">Book a Call</a>
+          <button class="button-link secondary" type="button" data-switch-panel="workflow">See Workflow</button>
+          <button class="button-link secondary" type="button" data-switch-panel="audit">See Audit Artifacts</button>
+        </div>
+        <div class="mini-grid" aria-label="Key platform metrics">
+          <div class="mini-stat">
+            <strong>26 stages</strong>
+            <span>Structured audit pipeline from intake to exploit validation.</span>
+          </div>
+          <div class="mini-stat">
+            <strong>31 chains</strong>
+            <span>EVM deployment support for broad protocol coverage.</span>
+          </div>
+          <div class="mini-stat">
+            <strong>86% reduction</strong>
+            <span>Measured false-positive filtering across the framework flow.</span>
+          </div>
+        </div>
+      </article>
+
+      <aside class="panel hero-visual" aria-label="ARIIA framework layer diagram">
+        <div class="signal-board">
+          <div class="diagram-frame">
+            <svg viewBox="0 0 720 860" role="img" aria-labelledby="diagram-title diagram-desc">
+              <title id="diagram-title">ARIIA six-layer exploit pipeline</title>
+              <desc id="diagram-desc">A conceptual system diagram showing the six ARIIA framework layers flowing from input to output with circuit-like signal paths and a proof block for 86 percent false positive reduction.</desc>
+              <defs>
+                <linearGradient id="panelGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#58e0b5" stop-opacity="0.16" />
+                  <stop offset="100%" stop-color="#7ba6ff" stop-opacity="0.08" />
+                </linearGradient>
+                <linearGradient id="cyanLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#58e0b5" />
+                  <stop offset="100%" stop-color="#79d8ff" />
+                </linearGradient>
+                <linearGradient id="amberLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ffd16a" />
+                  <stop offset="100%" stop-color="#ffb55a" />
+                </linearGradient>
+                <filter id="glowSoft" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="4" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter id="glowStrong" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="8" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <g opacity="0.28">
+                <path d="M90 120 H215" stroke="url(#amberLine)" stroke-width="2.2" fill="none" />
+                <circle cx="90" cy="120" r="3.2" fill="#ffd16a" filter="url(#glowSoft)" />
+                <path d="M505 120 H630 V168" stroke="url(#amberLine)" stroke-width="2.2" fill="none" />
+                <circle cx="630" cy="168" r="3.2" fill="#ffd16a" filter="url(#glowSoft)" />
+                <path d="M80 236 H168" stroke="url(#amberLine)" stroke-width="1.8" fill="none" />
+                <path d="M550 248 H628 V324" stroke="url(#amberLine)" stroke-width="1.8" fill="none" />
+                <path d="M116 658 H116 V760 H242" stroke="url(#cyanLine)" stroke-width="2.2" fill="none" />
+                <path d="M604 512 H648 V760 H478" stroke="url(#cyanLine)" stroke-width="2.2" fill="none" />
+                <circle cx="242" cy="760" r="3.2" fill="#62f0d0" filter="url(#glowSoft)" />
+                <circle cx="478" cy="760" r="3.2" fill="#62f0d0" filter="url(#glowSoft)" />
+              </g>
+
+              <rect x="186" y="44" width="348" height="56" rx="12" fill="url(#panelGlow)" stroke="#7ae7ff" stroke-opacity="0.55" />
+              <text x="360" y="67" fill="#f3fbff" font-size="16" text-anchor="middle" font-family="Consolas, 'Courier New', monospace" font-weight="700">ARIIA 6-LAYER PIPELINE</text>
+              <text x="360" y="86" fill="#8fd7e6" font-size="12.5" text-anchor="middle" font-family="Consolas, 'Courier New', monospace">scope intake to verified exploit output</text>
+
+              <g filter="url(#glowSoft)" font-family="Consolas, 'Courier New', monospace">
+                <polygon points="154,134 566,134 540,176 180,176" fill="rgba(9,18,30,0.9)" stroke="#77e6ff" stroke-width="2.2" />
+                <text x="360" y="153" fill="#f6fbff" font-size="18" text-anchor="middle" font-weight="700">1. INPUT LAYER</text>
+                <text x="360" y="169" fill="#9adce8" font-size="11.5" text-anchor="middle">addresses | repos | bounty scope</text>
+
+                <polygon points="172,196 548,196 526,236 194,236" fill="rgba(9,18,30,0.9)" stroke="#77e6ff" stroke-width="2.1" />
+                <text x="360" y="215" fill="#f6fbff" font-size="17" text-anchor="middle" font-weight="700">2. COLLECTION LAYER</text>
+                <text x="360" y="230" fill="#9adce8" font-size="11.3" text-anchor="middle">verified source | ABI | dependencies</text>
+
+                <polygon points="188,256 532,256 514,294 206,294" fill="rgba(9,18,30,0.9)" stroke="#77e6ff" stroke-width="2" />
+                <text x="360" y="274" fill="#f6fbff" font-size="16.5" text-anchor="middle" font-weight="700">3. ANALYSIS LAYER</text>
+                <text x="360" y="289" fill="#9adce8" font-size="11.2" text-anchor="middle">static analyzers | formal checks | math</text>
+
+                <polygon points="206,316 514,316 498,352 222,352" fill="rgba(9,18,30,0.9)" stroke="#77e6ff" stroke-width="1.9" />
+                <text x="360" y="333" fill="#f6fbff" font-size="16" text-anchor="middle" font-weight="700">4. VALIDATION LAYER</text>
+                <text x="360" y="347" fill="#9adce8" font-size="11" text-anchor="middle">deduplication | anti-hallucination | signal lift</text>
+
+                <polygon points="224,372 496,372 482,406 238,406" fill="rgba(9,18,30,0.9)" stroke="#77e6ff" stroke-width="1.8" />
+                <text x="360" y="388" fill="#f6fbff" font-size="15.5" text-anchor="middle" font-weight="700">5. EXPLOITATION LAYER</text>
+                <text x="360" y="401" fill="#9adce8" font-size="10.8" text-anchor="middle">protocol-aware PoC generation</text>
+
+                <polygon points="242,426 478,426 466,458 254,458" fill="rgba(9,18,30,0.9)" stroke="#77e6ff" stroke-width="1.7" />
+                <text x="360" y="441" fill="#f6fbff" font-size="15" text-anchor="middle" font-weight="700">6. OUTPUT LAYER</text>
+                <text x="360" y="453" fill="#9adce8" font-size="10.6" text-anchor="middle">classification | persistence | knowledge base</text>
+              </g>
+
+              <path d="M360 100 V132" stroke="url(#cyanLine)" stroke-width="3" fill="none" filter="url(#glowSoft)" />
+              <path d="M360 458 V520" stroke="url(#cyanLine)" stroke-width="3" fill="none" filter="url(#glowSoft)" />
+              <circle cx="360" cy="520" r="4.5" fill="#62f0d0" filter="url(#glowStrong)" />
+
+              <g opacity="0.8">
+                <path d="M110 182 H156" stroke="url(#amberLine)" stroke-width="2" fill="none" />
+                <path d="M566 154 H614 V288" stroke="url(#amberLine)" stroke-width="2" fill="none" />
+                <circle cx="110" cy="182" r="3" fill="#ffd16a" filter="url(#glowSoft)" />
+                <circle cx="614" cy="288" r="3" fill="#ffd16a" filter="url(#glowSoft)" />
+                <path d="M136 344 H206" stroke="url(#amberLine)" stroke-width="1.7" fill="none" />
+                <path d="M498 390 H622 V458" stroke="url(#amberLine)" stroke-width="1.7" fill="none" />
+                <circle cx="136" cy="344" r="2.8" fill="#ffd16a" filter="url(#glowSoft)" />
+                <circle cx="622" cy="458" r="2.8" fill="#ffd16a" filter="url(#glowSoft)" />
+              </g>
+
+              <rect x="224" y="552" width="272" height="144" rx="16" fill="url(#panelGlow)" stroke="#7ae7ff" stroke-width="2.2" filter="url(#glowSoft)" />
+              <text x="360" y="592" fill="#9fdce8" font-size="14" text-anchor="middle" font-family="Consolas, 'Courier New', monospace">22 to 26-stage execution</text>
+              <text x="360" y="644" fill="#62f0d0" font-size="56" text-anchor="middle" font-family="Consolas, 'Courier New', monospace" font-weight="700">86%</text>
+              <text x="360" y="674" fill="#d6fbff" font-size="18" text-anchor="middle" font-family="Consolas, 'Courier New', monospace">measured false-positive reduction</text>
+              <path d="M360 700 V734" stroke="url(#cyanLine)" stroke-width="3" fill="none" filter="url(#glowSoft)" />
+              <text x="360" y="772" fill="#8fd7e6" font-size="12.5" text-anchor="middle" font-family="Consolas, 'Courier New', monospace">modular layers, auditable handoffs, exploit-ready output</text>
+            </svg>
+          </div>
+
+          <div class="diagram-notes" aria-label="Pipeline highlights">
+            <div class="diagram-note">
+              <strong>Signal Compression</strong>
+              <span>Moves from raw scope to high-confidence exploitable signal through staged filtering.</span>
+            </div>
+            <div class="diagram-note">
+              <strong>Modular Architecture</strong>
+              <span>Each layer can evolve independently without destabilizing the full pipeline.</span>
+            </div>
+            <div class="diagram-note">
+              <strong>Buyer Proof</strong>
+              <span>Ends in validated evidence that audit firms and security teams can actually act on.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="tabs-shell" aria-live="polite">
+      <section class="tab-panel is-active" id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
+        <div class="section-header">
+          <h3>Why teams bring this in</h3>
+          <p>
+            This is not another static analyzer, another audit dashboard, or another thin wrapper around a language model.
+            It is internal security infrastructure for teams that need to find exploitable issues faster and defend every conclusion with stronger evidence.
+          </p>
+        </div>
+        <div class="content-grid">
+          <article class="card">
+            <h3>What You Are Buying</h3>
+            <p>
+              A pre-audit and exploit-validation engine that accepts a deployed contract or repository,
+              runs multiple analysis modes in parallel, filters noise, and produces a higher-confidence result set.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Where It Fits</h3>
+            <ul>
+              <li>Audit firms that want better throughput without lowering proof quality.</li>
+              <li>Bug bounty operators who need faster exploit confirmation.</li>
+              <li>Security platforms that want pre-deployment exploit discovery alongside monitoring.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Commercial Angles</h3>
+            <ul>
+              <li>Pre-audit acceleration layer for audit teams.</li>
+              <li>Exploit-validation backend for triage workflows.</li>
+              <li>White-labeled internal analyst tooling.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-workflow" role="tabpanel" aria-labelledby="tab-workflow" tabindex="0">
+        <div class="section-header">
+          <h3>Workflow</h3>
+          <p>
+            The framework is organized into six distinct functional layers that carry an audit from scope ingestion to verified exploit output.
+            This is the part prospects need to understand: the value is not just automation, but structured progression from raw target to confirmed evidence.
+          </p>
+        </div>
+        <div class="workflow-grid">
+          <article class="card">
+            <h3>Six-Layer Execution Map</h3>
+            <div class="workflow-layer-map">
+              <div class="workflow-node" data-step="1">
+                <h4>Input Layer</h4>
+                <p>Acts as the gateway for scope definition, accepting deployed contract addresses, GitHub repository URLs, and bug bounty program definitions.</p>
+                <small>Gateway to the pipeline</small>
+              </div>
+              <div class="workflow-node" data-step="2">
+                <h4>Collection Layer</h4>
+                <p>Creates the target profile with verified Solidity source, ABI definitions, dependency trees, and protocol fingerprints.</p>
+                <small>Target intelligence</small>
+              </div>
+              <div class="workflow-node" data-step="3">
+                <h4>Analysis Layer</h4>
+                <p>Executes six static analysis tools in parallel alongside mathematical checks and formal verification engines.</p>
+                <small>Parallel detection suite</small>
+              </div>
+              <div class="workflow-node" data-step="4">
+                <h4>Validation Layer</h4>
+                <p>Filters and enriches raw findings through semantic deduplication and the anti-hallucination stack to isolate high-confidence signals.</p>
+                <small>Detective system</small>
+              </div>
+              <div class="workflow-node" data-step="5">
+                <h4>Exploitation Layer</h4>
+                <p>Converts validated findings into executable proof-of-concept contracts using protocol-aware scaffold generation and multi-turn reasoning.</p>
+                <small>Attacker system</small>
+              </div>
+              <div class="workflow-node" data-step="6">
+                <h4>Output Layer</h4>
+                <p>Classifies findings, stores results, and grows the historical knowledge base that makes later reviews sharper.</p>
+                <small>Persistent output layer</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>What This Structure Sells</h3>
+            <p>
+              Prospects do not just buy a faster tool. They buy a system that explains how evidence is created, validated, exploited, and retained over time.
+            </p>
+            <div class="metrics-grid">
+              <div class="metric-box">
+                <strong>Modular upgrades</strong>
+                <span>Each layer can evolve, be extended, or be replaced without breaking the rest of the pipeline.</span>
+              </div>
+              <div class="metric-box">
+                <strong>Operational clarity</strong>
+                <span>Buyers can see exactly where scope intake, analysis, validation, and exploitation happen.</span>
+              </div>
+              <div class="metric-box">
+                <strong>Proof-first delivery</strong>
+                <span>The pipeline is explicitly built to end in validated evidence, not just suspicion or noisy findings.</span>
+              </div>
+              <div class="metric-box">
+                <strong>Compounding value</strong>
+                <span>Output persistence and knowledge-base updates make every engagement more useful than the last.</span>
+              </div>
+            </div>
+
+            <div class="diff-grid">
+              <div class="diff-card">
+                <strong>Audit firms</strong>
+                <span>Use it as a structured pre-audit and exploit-validation layer that increases throughput without weakening proof quality.</span>
+              </div>
+              <div class="diff-card">
+                <strong>Bounty teams</strong>
+                <span>Use it to compress triage cycles and move from raw report to exploit confirmation faster.</span>
+              </div>
+              <div class="diff-card">
+                <strong>Security platforms</strong>
+                <span>Use it to add pre-deployment exploit discovery alongside monitoring, response, or investigation products.</span>
+              </div>
+              <div class="diff-card">
+                <strong>Strategic buyers</strong>
+                <span>Use it as owned internal infrastructure that can be extended layer by layer instead of rebuilding the stack from scratch.</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" tabindex="0">
+        <div class="section-header">
+          <h3>Audit Artifacts</h3>
+          <p>
+            This tab embeds the existing audit deliverables from the repository so a prospective buyer or partner can see
+            how findings, validation, and exploit evidence are surfaced in practice. Each artifact opens inline and can also be viewed directly.
+          </p>
+        </div>
+
+        <div class="audit-layout">
+          <aside class="audit-menu" aria-label="Audit selector">
+            <button class="audit-button is-active" type="button" data-audit="efvault">
+              <strong>EFVault Confirmed Exploit</strong>
+              <span>Confirmed exploit path with autonomous audit narrative and validation evidence.</span>
+            </button>
+            <button class="audit-button" type="button" data-audit="ceaser">
+              <strong>Ceaser Protocol</strong>
+              <span>High signal-to-noise example showing false-positive rejection and one real vulnerability.</span>
+            </button>
+            <button class="audit-button" type="button" data-audit="kiln">
+              <strong>Kiln AaveV3Connector</strong>
+              <span>Bug bounty-oriented case with connector analysis and issue classification.</span>
+            </button>
+          </aside>
+
+          <article class="audit-viewer">
+            <div class="audit-header">
+              <div class="audit-summary">
+                <h3 id="audit-title">EFVault Confirmed Exploit</h3>
+                <p id="audit-summary">
+                  Confirmed exploit case showing autonomous analysis, formal checks, and exploit-path validation in one report.
+                </p>
+              </div>
+              <a class="open-link" id="audit-open-link" href="audit/audit-721-efvault-confirmed-exploit.html" target="_blank" rel="noopener noreferrer">Open Artifact in New Tab</a>
+            </div>
+
+            <div class="audit-meta-grid" id="audit-meta-grid">
+              <div class="audit-meta">
+                <span>Audit ID</span>
+                <strong id="audit-id">#721</strong>
+              </div>
+              <div class="audit-meta">
+                <span>Primary Signal</span>
+                <strong id="audit-signal">Confirmed exploit</strong>
+              </div>
+              <div class="audit-meta">
+                <span>Commercial Relevance</span>
+                <strong id="audit-usecase">Proof of exploit depth</strong>
+              </div>
+            </div>
+
+            <div class="audit-frame-wrap">
+              <iframe
+                id="audit-frame"
+                title="Embedded audit artifact"
+                src="audit/audit-721-efvault-confirmed-exploit.html"
+                loading="lazy">
+              </iframe>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="footer-card" id="contact">
+      <div class="footer-grid">
+        <div>
+          <div class="section-header">
+            <h3>About Us</h3>
+            <p>
+              We build autonomous smart-contract security infrastructure for teams that care about speed,
+              proof quality, and exploit realism. The product is designed to sit behind professional security workflows,
+              not replace them with a thin interface.
+            </p>
+          </div>
+
+          <div class="contact-meta">
+            <div class="contact-column">
+              <h4>Contact Email</h4>
+              <p><a id="contact-email-link" href="mailto:replace@your-domain.com">replace@your-domain.com</a></p>
+            </div>
+            <div class="contact-column">
+              <h4>Telephone</h4>
+              <p><a id="contact-phone-link" href="tel:+10000000000">+1 000 000 0000</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-header">
+            <h3>Book a Call</h3>
+          </div>
+
+          <form id="lead-form" novalidate>
+            <div class="field-grid">
+              <label>
+                Email
+                <input type="email" id="lead-email" name="email" placeholder="operator@company.com" autocomplete="email" required>
+              </label>
+              <label>
+                Phone Number
+                <input type="tel" id="lead-phone" name="phone" placeholder="+1 555 123 4567" autocomplete="tel" required>
+              </label>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                Preferred Call Date
+                <input type="date" id="lead-date" name="call_date" required>
+              </label>
+              <label>
+                Preferred Call Time
+                <input type="time" id="lead-time" name="call_time" required>
+              </label>
+            </div>
+
+            <label>
+              Context
+              <textarea id="lead-notes" name="notes" placeholder="Tell us whether this is for audit acceleration, exploit validation, or a strategic partnership."></textarea>
+            </label>
+
+            <button type="submit">Request a Demo Call</button>
+            <p class="form-status" id="form-status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-foot">
+      <span>&copy; <span id="year"></span> AUDIT WEB3 Framework</span>
+    </footer>
+  </main>
+
+  <script>
+    const appConfig = {
+      contactEmail: "replace@your-domain.com",
+      contactPhoneDisplay: "+1 000 000 0000",
+      contactPhoneHref: "+10000000000",
+      formEndpoint: ""
+    };
+
+    const auditArtifacts = {
+      efvault: {
+        title: "EFVault Confirmed Exploit",
+        summary: "Confirmed exploit case showing autonomous analysis, formal checks, and exploit-path validation in one report.",
+        auditId: "#721",
+        signal: "Confirmed exploit",
+        useCase: "Proof of exploit depth",
+        href: "audit/audit-721-efvault-confirmed-exploit.html"
+      },
+      ceaser: {
+        title: "Ceaser Protocol",
+        summary: "Signal filtering example where the framework rejected multiple weak paths and isolated one commercially relevant vulnerability.",
+        auditId: "#754",
+        signal: "False-positive compression",
+        useCase: "Audit throughput and review efficiency",
+        href: "audit/audit-754-ceaser-protocol.html"
+      },
+      kiln: {
+        title: "Kiln AaveV3Connector",
+        summary: "Bounty-oriented connector review showing protocol context, issue framing, and cross-tool validation output.",
+        auditId: "#800",
+        signal: "Bounty-grade finding flow",
+        useCase: "Triage and exploit confirmation",
+        href: "audit/audit-800-kiln-aavev3connector-bounty.html"
+      }
+    };
+
+    function initTabs() {
+      const buttons = Array.from(document.querySelectorAll(".tab-button"));
+      const panels = Array.from(document.querySelectorAll(".tab-panel"));
+      const topbar = document.querySelector(".topbar");
+
+      function scrollToPanel(panelName) {
+        if (panelName === "home") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+
+        const target =
+          document.querySelector("#panel-" + panelName + " .section-header") ||
+          document.getElementById("panel-" + panelName);
+
+        if (!target) {
+          return;
+        }
+
+        const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
+        const top = window.scrollY + target.getBoundingClientRect().top - topbarHeight - 28;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      }
+
+      function activate(panelName, shouldScroll) {
+        buttons.forEach((button) => {
+          const isSelected = button.dataset.panel === panelName;
+          button.setAttribute("aria-selected", String(isSelected));
+        });
+
+        panels.forEach((panel) => {
+          const isActive = panel.id === "panel-" + panelName;
+          panel.classList.toggle("is-active", isActive);
+        });
+
+        if (shouldScroll) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              scrollToPanel(panelName);
+            });
+          });
+        }
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activate(button.dataset.panel, true);
+        });
+      });
+
+      document.querySelectorAll("[data-switch-panel]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activate(button.dataset.switchPanel, true);
+        });
+      });
+    }
+
+    function initAuditExplorer() {
+      const buttons = Array.from(document.querySelectorAll(".audit-button"));
+      const frame = document.getElementById("audit-frame");
+      const openLink = document.getElementById("audit-open-link");
+      const title = document.getElementById("audit-title");
+      const summary = document.getElementById("audit-summary");
+      const auditId = document.getElementById("audit-id");
+      const signal = document.getElementById("audit-signal");
+      const useCase = document.getElementById("audit-usecase");
+
+      function renderAudit(key) {
+        const artifact = auditArtifacts[key];
+        if (!artifact) {
+          return;
+        }
+
+        buttons.forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.audit === key);
+        });
+
+        title.textContent = artifact.title;
+        summary.textContent = artifact.summary;
+        auditId.textContent = artifact.auditId;
+        signal.textContent = artifact.signal;
+        useCase.textContent = artifact.useCase;
+        frame.src = artifact.href;
+        openLink.href = artifact.href;
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          renderAudit(button.dataset.audit);
+        });
+      });
+    }
+
+    function initContactDetails() {
+      const emailLink = document.getElementById("contact-email-link");
+      const phoneLink = document.getElementById("contact-phone-link");
+
+      emailLink.textContent = appConfig.contactEmail;
+      emailLink.href = "mailto:" + appConfig.contactEmail;
+      phoneLink.textContent = appConfig.contactPhoneDisplay;
+      phoneLink.href = "tel:" + appConfig.contactPhoneHref;
+    }
+
+    function formatLeadBody(formData) {
+      const lines = [
+        "New landing-page lead",
+        "",
+        "Email: " + formData.email,
+        "Phone: " + formData.phone,
+        "Preferred call date: " + formData.callDate,
+        "Preferred call time: " + formData.callTime,
+        "Context: " + formData.notes
+      ];
+
+      return lines.join("\n");
+    }
+
+    function encodeMailto(formData) {
+      const subject = encodeURIComponent("New AUDIT WEB3 Framework lead");
+      const body = encodeURIComponent(formatLeadBody(formData));
+      return "mailto:" + appConfig.contactEmail + "?subject=" + subject + "&body=" + body;
+    }
+
+    function readLeadForm(formElement) {
+      return {
+        email: formElement.email.value.trim(),
+        phone: formElement.phone.value.trim(),
+        callDate: formElement.call_date.value.trim(),
+        callTime: formElement.call_time.value.trim(),
+        notes: formElement.notes.value.trim() || "Not provided"
+      };
+    }
+
+    function validateLeadForm(formData) {
+      const missing = [];
+
+      if (!formData.email) {
+        missing.push("email");
+      }
+      if (!formData.phone) {
+        missing.push("phone number");
+      }
+      if (!formData.callDate) {
+        missing.push("call date");
+      }
+      if (!formData.callTime) {
+        missing.push("call time");
+      }
+
+      return missing;
+    }
+
+    async function submitToEndpoint(formElement) {
+      const payload = new FormData(formElement);
+      const response = await fetch(appConfig.formEndpoint, {
+        method: "POST",
+        body: payload,
+        headers: {
+          Accept: "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Endpoint rejected the submission.");
+      }
+    }
+
+    function setStatus(message, statusClass) {
+      const status = document.getElementById("form-status");
+      status.textContent = message;
+      status.className = "form-status" + (statusClass ? " " + statusClass : "");
+    }
+
+    function initLeadForm() {
+      const form = document.getElementById("lead-form");
+      const dateInput = document.getElementById("lead-date");
+
+      if (dateInput) {
+        dateInput.min = new Date().toISOString().split("T")[0];
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = readLeadForm(form);
+        const missing = validateLeadForm(formData);
+
+        if (missing.length > 0) {
+          setStatus("Please complete: " + missing.join(", ") + ".", "is-error");
+          return;
+        }
+
+        if (appConfig.formEndpoint) {
+          try {
+            await submitToEndpoint(form);
+            form.reset();
+            setStatus("Lead submitted successfully.", "is-success");
+          } catch (error) {
+            setStatus("Submission failed. Check the configured endpoint and try again.", "is-error");
+          }
+          return;
+        }
+
+        window.location.href = encodeMailto(formData);
+        setStatus("Your mail client should open with the lead details pre-filled.", "is-success");
+      });
+    }
+
+    function setCurrentYear() {
+      const year = document.getElementById("year");
+      year.textContent = String(new Date().getFullYear());
+    }
+
+    function initApp() {
+      initTabs();
+      initAuditExplorer();
+      initContactDetails();
+      initLeadForm();
+      setCurrentYear();
+    }
+
+    initApp();
+  </script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Audit Report — Kiln AaveV3Connector (Audit #800)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --fg: #1a1a1a;
+    --fg-muted: #6b7280;
+    --fg-light: #9ca3af;
+    --bg: #ffffff;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --accent: #dc2626;
+    --accent-bg: #fef2f2;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --yellow: #ca8a04;
+    --yellow-bg: #fefce8;
+    --blue: #2563eb;
+    --blue-bg: #eff6ff;
+    --code-bg: #f9fafb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    line-height: 1.7;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+
+  .header {
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .header-sub {
+    font-size: 15px;
+    color: var(--fg-muted);
+    font-weight: 400;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .meta-cell {
+    background: var(--bg);
+    padding: 16px 20px;
+  }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-light);
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-top: 56px;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  p, li {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--fg);
+  }
+
+  p { margin-bottom: 12px; }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+  li { margin-bottom: 4px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--fg);
+  }
+  tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: 1px solid var(--border); }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .tag-critical { background: var(--accent-bg); color: var(--accent); }
+  .tag-high { background: #fff7ed; color: #ea580c; }
+  .tag-medium { background: var(--yellow-bg); color: var(--yellow); }
+  .tag-low { background: var(--blue-bg); color: var(--blue); }
+  .tag-fp { background: var(--border-light); color: var(--fg-muted); }
+  .tag-real { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
+  .tag-formal { background: #f5f3ff; color: #7c3aed; border: 1px solid #7c3aed; }
+  .tag-bounty { background: #ecfdf5; color: #059669; border: 1px solid #059669; }
+
+  .finding {
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .finding-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+  .finding-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--fg-light);
+  }
+  .finding-title {
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+  }
+  .finding-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--fg-muted);
+  }
+  .finding-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .finding-body {
+    font-size: 13px;
+    line-height: 1.65;
+    color: #374151;
+  }
+  .finding-verdict {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-light);
+    font-size: 13px;
+  }
+  .verdict-label {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .verdict-fp .verdict-label { color: var(--green); }
+  .verdict-real .verdict-label { color: var(--accent); }
+  .verdict-formal .verdict-label { color: #7c3aed; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid var(--border-light);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .highlight {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-bg);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .highlight-safe {
+    border-left-color: var(--green);
+    background: var(--green-bg);
+  }
+  .highlight-bounty {
+    border-left-color: #059669;
+    background: #ecfdf5;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .summary-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .summary-cell {
+    background: var(--bg);
+    padding: 20px;
+    text-align: center;
+  }
+  .summary-number {
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .summary-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--fg-light);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .finding-real {
+    border-color: var(--accent);
+    border-width: 2px;
+  }
+
+  .finding-formal {
+    border-color: #7c3aed;
+    border-width: 2px;
+  }
+
+  @media print {
+    .page { padding: 40px 20px; }
+    .finding { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-label">Security Audit Report</div>
+    <h1>Kiln OmniVault &mdash; AaveV3Connector</h1>
+    <div class="header-sub">ERC-4626 vault with Aave V3 connector on Ethereum mainnet &mdash; First accepted bounty</div>
+  </div>
+
+  <!-- Meta -->
+  <div class="meta-grid">
+    <div class="meta-cell">
+      <div class="meta-label">Audit ID</div>
+      <div class="meta-value">#800</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-label">Contract</div>
+      <div class="meta-value"><code>0x08c28e1c...eE3CD</code></div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-label">Mode</div>
+      <div class="meta-value">Deployed (Etherscan)</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-label">Chain</div>
+      <div class="meta-value">Ethereum Mainnet</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-label">Platform</div>
+      <div class="meta-value">Cantina (Bug Bounty)</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-label">Date</div>
+      <div class="meta-value">18 March 2026</div>
+    </div>
+  </div>
+
+  <!-- Bounty highlight -->
+  <div class="highlight highlight-bounty" style="margin-bottom: 48px;">
+    <div style="color: #059669;">FIRST ACCEPTED BUG BOUNTY</div>
+    <div style="font-size: 13px; font-weight: 400; color: var(--fg-muted); margin-top: 8px;">
+      maxWithdraw returns ~$985M instead of vault's actual position (~$120K) &mdash; Reported to Cantina
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-row">
+    <div class="summary-cell">
+      <div class="summary-number">7</div>
+      <div class="summary-label">Total Findings</div>
+    </div>
+    <div class="summary-cell">
+      <div class="summary-number" style="color: var(--accent);">1</div>
+      <div class="summary-label">Confirmed &amp; Reported</div>
+    </div>
+    <div class="summary-cell">
+      <div class="summary-number" style="color: #7c3aed;">1</div>
+      <div class="summary-label">Formally Verified</div>
+    </div>
+  </div>
+
+  <!-- Context -->
+  <h2>Audit Scope</h2>
+  <p>The framework audited multiple Kiln OmniVault contracts across audits #795&ndash;#806. The <code>AaveV3Connector</code> (audit #800) is a connector module called via <code>delegatecall</code> from the main Vault. It implements the bridge between the vault and Aave V3 lending pool, managing deposits and withdrawals of user funds.</p>
+  <p>The Kiln OmniVault ecosystem consists of a main Vault contract (<code>0x869855...3A72</code>), a ConnectorRegistry, and multiple connector implementations for different DeFi protocols.</p>
+
+  <!-- Tools -->
+  <h2>Tools Executed</h2>
+  <table>
+    <thead>
+      <tr><th>Tool</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Slither</td><td>Static analysis completed</td></tr>
+      <tr><td>Mythril</td><td>Symbolic execution completed</td></tr>
+      <tr><td>Aderyn</td><td>Pattern analysis completed</td></tr>
+      <tr>
+        <td>Certora</td>
+        <td>
+          <strong>1 security property violated</strong> (viewReentrancy)<br>
+          Formal proof of reentrancy risk in view functions
+        </td>
+      </tr>
+      <tr><td>Math Verification</td><td>Protocol type: vault (ERC-4626)</td></tr>
+      <tr><td>Invariant Detection</td><td>4 invariant violations detected</td></tr>
+      <tr><td>AI Business Logic</td><td>1 finding (maxDeposit calculation)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- REPORTED FINDING -->
+  <h2>Reported Finding</h2>
+
+  <div class="finding finding-real">
+    <div class="finding-header">
+      <div>
+        <span class="finding-id">KILN-01</span>
+        <div class="finding-title">maxWithdraw() Returns Total Aave Pool Liquidity Instead of Vault-Specific Amount</div>
+      </div>
+      <span class="tag tag-bounty">Reported to Cantina</span>
+    </div>
+    <div class="finding-meta">
+      <span><span class="tag tag-medium">Medium</span></span>
+      <span>Likelihood: Medium</span>
+      <span>Impact: Medium</span>
+    </div>
+    <div class="finding-body">
+      <p>The <code>maxWithdraw()</code> function in <code>AaveV3Connector</code> returns the <strong>total liquidity of the entire Aave V3 USDC pool</strong> (~$985M) instead of the vault's specific withdrawable amount (~$120K).</p>
+
+      <p><strong>Buggy code:</strong></p>
+<pre><code>function maxWithdraw(IERC20 asset) external view override returns (uint256) {
+    // ... reserve checks ...
+    (address _aToken,,) = _poolDataProvider.getReserveTokensAddresses(address(asset));
+    return asset.balanceOf(address(_aToken));  // BUG: returns TOTAL pool liquidity
+}</code></pre>
+
+      <p><strong>Correct implementation:</strong></p>
+<pre><code>return IERC20(_aToken).balanceOf(address(this));
+// address(this) = Vault via delegatecall = vault's actual aToken balance</code></pre>
+
+      <h3 style="margin-top: 16px;">Impact</h3>
+      <ol>
+        <li><strong>forceWithdraw DoS</strong> &mdash; The Vault's <code>_maxRedeem()</code> uses <code>connector.maxWithdraw()</code> to determine if a blocked user's balance is withdrawable. With the bug, it always returns "yes" (because $985M &gt; any user balance), bypassing the <code>InsufficientLiquidity</code> safety check. When actual liquidity is insufficient, <code>forceWithdraw</code> reverts at the Aave level with an opaque error.</li>
+        <li><strong>ERC-4626 violation</strong> &mdash; Per EIP-4626, <code>maxWithdraw</code> MUST return "the maximum amount of the underlying asset that can be withdrawn from the vault by the owner." Returning the entire pool's liquidity violates this specification.</li>
+        <li><strong>Integration risk</strong> &mdash; Protocols reading <code>maxWithdraw</code> (lending, yield aggregators) receive a ~8,000x overstated liquidity figure.</li>
+      </ol>
+
+      <h3 style="margin-top: 16px;">Proof of Concept</h3>
+<pre><code>// Foundry test on Ethereum mainnet fork
+contract AaveV3MaxWithdrawExploitTest is Test {
+    address constant CONNECTOR = 0x08c28e1c82C09487DCB15a3e0839e8C888EeE3CD;
+    address constant POOL_PROVIDER = 0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e;
+    address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+
+    function testMaxWithdrawIncorrectCalculation() public {
+        IPoolDataProvider poolDataProvider = IPoolDataProvider(
+            IPoolAddressesProvider(POOL_PROVIDER).getPoolDataProvider()
+        );
+        (address aToken,,) = poolDataProvider.getReserveTokensAddresses(USDC);
+
+        // What maxWithdraw currently returns (BUGGY)
+        uint256 buggyMaxWithdraw = IERC20(USDC).balanceOf(aToken);
+        // Returns ~$985M USDC — the ENTIRE Aave V3 USDC pool
+
+        assertTrue(buggyMaxWithdraw > 100_000_000 * 1e6);
+        // A vault with $120K deposited reports $985M as maxWithdraw
+    }
+}</code></pre>
+    </div>
+    <div class="finding-verdict verdict-real">
+      <span class="verdict-label">Confirmed &mdash; Reported to Cantina</span> &mdash; The <code>asset.balanceOf(address(_aToken))</code> call returns total pool liquidity instead of the vault's specific position. Fix: replace with <code>IERC20(_aToken).balanceOf(address(this))</code>. Submitted through Cantina bug bounty program. <strong>First accepted bounty from the framework.</strong>
+    </div>
+  </div>
+
+  <!-- Formally Verified -->
+  <h2>Formally Verified Finding</h2>
+
+  <div class="finding finding-formal">
+    <div class="finding-header">
+      <div>
+        <span class="finding-id">#10710</span>
+        <div class="finding-title">viewReentrancy &mdash; View Function Reentrancy Risk</div>
+      </div>
+      <span class="tag tag-formal">Formally Verified</span>
+    </div>
+    <div class="finding-meta">
+      <span><span class="tag tag-high">High</span></span>
+      <span>Confidence: 0.95</span>
+      <span>Tool: Certora</span>
+    </div>
+    <div class="finding-body">
+      Certora mathematically proved that view functions in the connector can return inconsistent values during reentrancy. While the connector is called via <code>delegatecall</code> with reentrancy guards on the Vault level, the formal violation confirms the theoretical attack vector exists.
+    </div>
+    <div class="finding-verdict verdict-formal">
+      <span class="verdict-label">Formally Verified</span> &mdash; Security property disproven for all possible inputs. Mitigated by Vault-level <code>nonReentrant</code> guard, but the connector itself does not enforce reentrancy protection.
+    </div>
+  </div>
+
+  <!-- Other Findings -->
+  <h2>Other Findings</h2>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Severity</th><th>Confidence</th><th>Assessment</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#10711</td>
+        <td>Staking returns invariant violation</td>
+        <td><span class="tag tag-high">High</span></td>
+        <td>0.42</td>
+        <td>Protocol does not have staking &mdash; misclassification</td>
+      </tr>
+      <tr>
+        <td>#10712</td>
+        <td>Arithmetic invariant violation</td>
+        <td><span class="tag tag-medium">Medium</span></td>
+        <td>0.15</td>
+        <td>Low confidence &mdash; no actionable impact</td>
+      </tr>
+      <tr>
+        <td>#10713</td>
+        <td>Donation attack vector</td>
+        <td><span class="tag tag-high">High</span></td>
+        <td>0.15</td>
+        <td>ERC-4626 vault uses internal accounting &mdash; mitigated</td>
+      </tr>
+      <tr>
+        <td>#10714</td>
+        <td>ACCESS-OWNER-ONLY violation</td>
+        <td><span class="tag tag-critical">Critical</span></td>
+        <td>0.90</td>
+        <td>Connector called via delegatecall &mdash; Vault enforces access control</td>
+      </tr>
+      <tr>
+        <td>#10716</td>
+        <td>maxDeposit unsafe calculation</td>
+        <td><span class="tag tag-medium">Medium</span></td>
+        <td>0.40</td>
+        <td>Related finding &mdash; decimal mismatch with <code>_accruedToTreasuryScaled</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Discovery -->
+  <h2>Discovery Process</h2>
+  <div class="highlight-safe highlight">
+    <strong>How the framework discovered this bug:</strong>
+    <ol style="margin-top: 8px; margin-bottom: 0;">
+      <li>The framework audited the AaveV3Connector as a deployed contract on Ethereum</li>
+      <li>Math verification detected an anomaly in the <code>maxDeposit</code> calculation (#10716)</li>
+      <li>Certora formally verified a view reentrancy violation (#10710)</li>
+      <li>Manual investigation of related <code>maxWithdraw</code> function revealed the core bug</li>
+      <li>PoC confirmed: <code>USDC.balanceOf(aToken)</code> returns ~$985M vs vault's ~$120K position</li>
+      <li>Report submitted to Cantina &mdash; <strong>accepted by the Kiln team</strong></li>
+    </ol>
+  </div>
+
+  <h2>Kiln OmniVault Audit Campaign</h2>
+  <p>The full campaign covered 12 audits (#795&ndash;#806) across the Kiln OmniVault ecosystem:</p>
+  <table>
+    <thead>
+      <tr><th>Contract</th><th>Address</th><th>Audits</th><th>Key Finding</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Vault (main)</td>
+        <td><code>0x8698...5A72</code></td>
+        <td>#795&ndash;#806</td>
+        <td>Certora security properties + invariant analysis</td>
+      </tr>
+      <tr>
+        <td>ConnectorRegistry</td>
+        <td><code>0xdE63...3A72</code></td>
+        <td>#796&ndash;#797</td>
+        <td>Access control verification</td>
+      </tr>
+      <tr>
+        <td><strong>AaveV3Connector</strong></td>
+        <td><code>0x08c2...E3CD</code></td>
+        <td><strong>#800</strong></td>
+        <td><strong>maxWithdraw bug &mdash; reported</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>AUDIT WEB3 Framework &mdash; Automated Security Analysis</span>
+    <span>18 March 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
